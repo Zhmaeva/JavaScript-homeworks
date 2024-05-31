@@ -113,4 +113,71 @@ describe('Домашнее задание к лекции 5 «Классы»', (
       expect(secondBook).toEqual(null);
     });
   })
+
+  describe('Задание №2. Пункт 5. Написание тестов', () => {
+    let library, book1, book2, book3, book4;
+
+    beforeEach(function() {
+      library = new Library('Публичная библиотека');
+      book1 = new FantasticBook('Автор', 'Найденная книга', 1919, 666);
+      book2 = new DetectiveBook('Яна Вагнер', 'Кто не спрятался', 2018, 510);
+      book3 = new NovelBook('К.Ф. Брин', 'Руины из роз', 2021, 300);
+      book4 = new Book('Кирилл Привалов', 'Яды: Полная история: от мышьяка до "Новичка"', 2022, 432);
+    });
+
+    it('создание новой библиотеки', () => {
+      expect(library).toBeDefined();
+      expect(library.name).toEqual('Публичная библиотека');
+      expect(library.books).toEqual(jasmine.any(Array));
+    });
+
+    it('добавление книг разных типов', () => {
+      library.addBook(book1);
+      library.addBook(book2);
+      library.addBook(book3);
+      library.addBook(book4);
+      expect(library.books[0].name).toEqual('Найденная книга');
+      expect(library.books[1].releaseDate).toEqual(2018);
+      expect(library.books[2].pagesCount).toEqual(300);
+      expect(library.books[3].author).toEqual('Кирилл Привалов');
+      expect(library.books.length).toEqual(4);
+    });
+
+    it('поиск книги 1919 года выпуска', () => {
+      library.addBook(book1);
+      library.addBook(book2);
+      library.addBook(book4);
+      const foundBook = library.findBookBy("releaseDate", 1919);
+      expect(foundBook.name).toEqual('Найденная книга');
+      const notFoundBook =library.findBookBy('pagesCount', 1);
+      expect(notFoundBook).toEqual(null);
+    });
+
+    it('выдача книги', () => {
+      library.addBook(book3);
+      library.addBook(book4);
+      const receivedBook = library.giveBookByName('Руины из роз');
+      expect(receivedBook.name).toEqual('Руины из роз');
+      expect(library.books.length).toEqual(1);
+    });
+
+    it('повреждение выданной книги', () => {
+      book3.state = 40;
+      expect(book3.state).toEqual(40);
+    });
+
+    it('восстановление выданной книги', () => {
+      book3.state = 40;
+      book3.fix();
+      book3.fix();
+      book3.fix();
+      expect(book3.state).toEqual(100);
+    });
+
+    it('добавление восстановленной книги в библиотеку', () => {
+      library.addBook(book3);
+      expect(library.books.length).toEqual(1);
+      expect(library.books[0].name).toEqual('Руины из роз');
+    });
+  });
 });
